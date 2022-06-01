@@ -37,9 +37,9 @@ def deflated_power_iteration(
     def _deflate(x, val, vec):
         return val * vec.dot(x) * vec
 
-    utils.log("beginning deflated power iteration")
+    # utils.log("beginning deflated power iteration")
     for i in range(num_eigenthings):
-        utils.log("computing eigenvalue/vector %d of %d" % (i + 1, num_eigenthings))
+        # utils.log("computing eigenvalue/vector %d of %d" % (i + 1, num_eigenthings))
         eigenval, eigenvec = power_iteration(
             current_op,
             power_iter_steps,
@@ -49,7 +49,7 @@ def deflated_power_iteration(
             fp16=fp16,
             init_vec=prev_vec,
         )
-        utils.log("eigenvalue %d: %.4f" % (i + 1, eigenval))
+        # utils.log("eigenvalue %d: %.4f" % (i + 1, eigenval))
 
         def _new_op_fn(x, op=current_op, val=eigenval, vec=eigenvec):
             return utils.maybe_fp16(op.apply(x), fp16) - _deflate(x, val, vec)
@@ -117,7 +117,7 @@ def power_iteration(
             error = 1.0
         else:
             error = np.abs(diff / lambda_estimate)
-        utils.progress_bar(i, steps, "power iter error: %.4f" % error)
+        # utils.progress_bar(i, steps, "power iter error: %.4f" % error)
         if error < error_threshold:
             break
         prev_lambda = lambda_estimate
