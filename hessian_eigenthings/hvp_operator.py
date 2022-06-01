@@ -36,7 +36,7 @@ class HVPOperator(Operator):
         full_dataset: bool = True,
         max_possible_gpu_samples: int = 256,
     ):
-        size = int(sum(p.numel() for p in model.parameters()))
+        size = int(sum(p.numel() for p in filter(lambda p: p.requires_grad, model.parameters())))
         super(HVPOperator, self).__init__(size)
         self.grad_vec = torch.zeros(size)
         self.model = model
@@ -75,7 +75,7 @@ class HVPOperator(Operator):
         # take the second gradient
         # this is the derivative of <grad_vec, v> where <,> is an inner product.
         hessian_vec_prod_dict = torch.autograd.grad(
-            grad_vec, self.model.parameters(), grad_outputs=vec, only_inputs=True
+            grad_vec, filter(lambda p: p.requires_grad, self.model.parameters()), grad_outputs=vec, only_inputs=True
         )
         # concatenate the results over the different components of the network
         hessian_vec_prod = torch.cat([g.contiguous().view(-1) for g in hessian_vec_prod_dict])
@@ -133,7 +133,7 @@ class HVPOperator(Operator):
             output = self.model(input)
             loss = self.criterion(output, target)
             grad_dict = torch.autograd.grad(
-                loss, self.model.parameters(), create_graph=True
+                loss, filter(lambda p: p.requires_grad, self.model.parameters()), create_graph=True
             )
             if grad_vec is not None:
                 grad_vec += torch.cat([g.contiguous().view(-1) for g in grad_dict])
