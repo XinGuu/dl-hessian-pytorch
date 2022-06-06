@@ -47,7 +47,7 @@ def eval_Mt_vec_prod(vec, model, dataloader, device):
 
     for i, (data, labels) in enumerate(dataloader):
         inputs = data.to(device)
-        labels = labels.to(device)
+        labels = torch.randint(high=10, size=labels.shape, device=device)
         # Forward pass
         outputs = model(inputs)
         # model.zero_grad()
@@ -216,7 +216,6 @@ def lanczos_tridiag(model, train_loader, device, M, sig2=0):
             q = q - torch.mm(q_mat[:, :m], V)
 
         q_mat[:, m].copy_(q.view(-1))
-
 
         # print('Compute Non-central Covariance Mt')
         v = eval_Mt_vec_prod(q, model, train_loader, device) - sig2 * q
