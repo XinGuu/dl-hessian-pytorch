@@ -14,7 +14,7 @@ import hessian_eigenthings.utils as utils
 def deflated_power_iteration(
     operator: Operator,
     num_eigenthings: int = 10,
-    power_iter_steps: int = 20,
+    power_iter_steps: int = 3,
     power_iter_err_threshold: float = 1e-4,
     momentum: float = 0.0,
     use_gpu: bool = True,
