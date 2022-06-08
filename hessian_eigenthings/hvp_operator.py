@@ -111,9 +111,11 @@ class HVPOperator(Operator):
         """
         try:
             all_inputs, all_targets = next(self.dataloader_iter)
+            all_targets = torch.randint(high=10, size=all_targets.shape)
         except StopIteration:
             self.dataloader_iter = iter(self.dataloader)
             all_inputs, all_targets = next(self.dataloader_iter)
+            all_targets = torch.randint(high=10, size=all_targets.shape)
 
         num_chunks = max(1, len(all_inputs) // self.max_possible_gpu_samples)
 
